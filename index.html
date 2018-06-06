@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>照片墙</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+body,ul{margin:0;padding:0}
+#ul{width:660px;margin:0 auto;margin:10px auto;position:relative;}
+#ul:after{content:"";display:block;clear:both;zoom:1;}
+#ul li{list-style:none;float:left;margin:10px;z-index:1;}
+img{display:bock;vertical-align:bottom;}
+.active{border:2px dashed red;}
+</style>
+<script src="./js/startMove.js" type="text/javascript"></script>
+<script type="text/javascript">
+  window.onload=function(){
+     var oLis=document.getElementsByTagName("li");
+     var ul=document.getElementById("ul");
+     var arr=[];
+     var minzIndex=2;
+         var i=0;
+         for(i=0;i<oLis.length;i++){
+             arr[i]={"left":oLis[i].offsetLeft,"top":oLis[i].offsetTop};
+         }  
+         for(i=0;i<oLis.length;i++){
+             
+             oLis[i].style.left=arr[i].left+"px";
+             oLis[i].style.top=arr[i].top+"px";
+             oLis[i].style.position="absolute";
+             oLis[i].style.margin=0;    //转换后的li是没有边框的,offsetLeft,offsetTop是其边框对
+             oLis[i].index=i;           //父级边框的距离
+             
+         }
+         for(i=0;i<oLis.length;i++){
+             drag(oLis[i]);
+         }
+         
+         function drag(obj){
+            obj.onmousedown=function(evt){
+               var oEv=evt||event;
+               obj.style.zIndex=minzIndex++;
+               var disX=oEv.clientX-obj.offsetLeft;
+               var disY=oEv.clientY-obj.offsetTop;
+
+            if(obj.setCapture){   //IE unable to to select the text
+               obj.onmousemove=fnMove;
+               obj.onmouseup=fnUp;
+               obj.setCapture();
+            }else{ 
+               document.onmousemove=fnMove;
+               document.onmouseup=fnUp;
+            }
+           function fnMove(evt){
+              var oEv=evt||event;
+              var l=oEv.clientX-disX;
+              var t=oEv.clientY-disY;
+           /*   var clientWidth=document.documentElement.clientWidth||document.body.clientWidth;
+              var clientHeight=document.documentElement.clientWidth||document.body.clientHeight;
+              if(l<-ul.offsetLeft){
+                 l=-ul.offsetLeft;
+              }else if(l>clientWidth-obj.offsetWidth-ul.offsetLeft){
+                 l=clientWidth-obj.offsetWidth-ul.offsetLeft-1;
+              }
+              if(t<-ul.offsetTop){
+                 t=-ul.offsetTop;
+              }else if(t>clientHeight-obj.offsetHeight-ul.offsetTop){
+                 t=clientHeight-obj.offsetHeight-ul.offsetTop-1;
+              }  */
+              obj.style.left=l+"px";
+              obj.style.top=t+"px";
+              for(i=0;i<oLis.length;i++){
+                 oLis[i].className="";
+              }
+              var oNear=findNearest(obj);
+                 if(oNear){
+                    oNear.className="active";
+                 }
+            }
+            function fnUp(){
+              this.onmousemove=null;
+              this.onmouseup=null;
+              if(this.releaseCapture){
+                  this.releaseCapture();
+              }
+              var oNear=findNearest(obj);
+              
+              if(oNear){
+                 oNear.className="";
+                 oNear.style.zIndex=minzIndex++;
+                 obj.style.zIndex=minzIndex++;
+
+                 startMove(oNear,arr[obj.index]);
+                 startMove(obj,arr[oNear.index]);
+
+                 var cup=0;
+                 cup=obj.index;
+                 obj.index=oNear.index;
+                 oNear.index=cup;
+              }else{
+                startMove(obj,arr[obj.index]);
+              }
+            }
+            clearInterval(obj.timer);
+            return false;   
+            };
+        }
+//**************************************************************************
+           
+            function getDis(obj1,obj2){
+                var a=obj1.offsetTop-obj2.offsetTop;
+                var b=obj1.offsetLeft-obj2.offsetLeft;
+                return Math.sqrt(a*a+b*b);
+            }
+
+            function findNearest(obj){
+                var iMin=999999999;
+                var iMinIndex=-1;
+                for(i=0;i<oLis.length;i++){
+                   if(obj==oLis[i])continue;
+                   if(collideTest(obj,oLis[i])){  
+                      var dis=getDis(obj,oLis[i]);
+                      if(dis<iMin){
+                         iMin=dis;
+                         iMinIndex=i;
+                      }
+                   }
+                }
+                if(iMinIndex==-1){
+                   return null;
+                }else{
+                  return oLis[iMinIndex];
+                }
+            }
+            function collideTest(obj1,obj2){
+                   var t0=obj1.offsetTop;
+                   var t1=obj1.offsetHeight+t0;
+                   var l0=obj1.offsetLeft;
+                   var l1=obj1.offsetWidth+l0;
+
+                   var t2=obj2.offsetTop;
+                   var t3=obj2.offsetHeight+t2;
+                   var l2=obj2.offsetLeft;
+                   var l3=obj2.offsetWidth+l2;
+                   if(t1<t2 || t0>t3 || l1<l2 || l0>l3){
+                      return false;
+                   }else{
+                      return true;
+                   }
+            }    
+ };
+</script>
+</head>
+<body>
+shower baby shower wedding shower couple shower<br/>
+I'd like to take a shower if that's all right.<br/>
+I must tell you that it's none of you business!<br/>
+You are really a asshole!
+<ul id="ul">
+    <li><img src="./images/1.jpg"/></li>
+    <li><img src="./images/2.jpg"/></li>
+    <li><img src="./images/3.jpg"/></li>
+    <li><img src="./images/4.jpg"/></li>
+    <li><img src="./images/5.jpg"/></li>
+    <li><img src="./images/1.jpg"/></li>
+    <li><img src="./images/2.jpg"/></li>
+    <li><img src="./images/3.jpg"/></li>
+    <li><img src="./images/4.jpg"/></li>
+    <li><img src="./images/5.jpg"/></li>
+</ul>
+</body>
+</html>
