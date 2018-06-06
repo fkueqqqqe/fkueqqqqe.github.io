@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>appleMenu</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+
+div{position:absolute;width:100%;text-align:center;bottom:0;}
+
+</style>
+<script type="text/javascript">
+   window.onload=function(){
+      var imgs=document.getElementsByTagName("img");
+      var div=document.getElementById("div")
+      var scale=0.5;
+      document.onmouseover=function(evt){
+          var oEv=evt||event;
+          var i=0;
+          for(i=0;i<imgs.length;i++){
+             var x0=imgs[i].offsetLeft+imgs[i].offsetWidth/2;
+             var y0=imgs[i].offsetTop+imgs[i].offsetHeight/2+div.offsetTop;
+
+             var a=x0-oEv.clientX;
+             var b=y0-oEv.clientY;
+
+             var dis=Math.sqrt(a*a+b*b);
+             
+             scale=(1-dis/200).toFixed(2);
+
+             if(scale<0.5){scale=0.5}
+
+             document.title=scale;
+
+             imgs[i].width=128*scale;
+          }
+
+      };
+
+      div.onmouseout=function(){
+         for(var i=0;i<imgs.length;i++){
+             imgs[i].width="64";
+         }
+      };
+
+   };
+</script>
+</head>
+<body>
+<div id="div">
+  <img src="./images/1.png" width="64px"/>
+  <img src="./images/2.png" width="64px"/>
+  <img src="./images/3.png" width="64px"/>
+  <img src="./images/4.png" width="64px"/>
+  <img src="./images/5.png" width="64px"/>
+</div>
+</body>
+</html>
