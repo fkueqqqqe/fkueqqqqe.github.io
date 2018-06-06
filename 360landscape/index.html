@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>360度全景展示效果</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+
+#img{position:absolute;right:0;}
+</style>
+<script type="text/javascript">
+   window.onload=function(){
+      var img=document.getElementById("img");
+      var bd=document.getElementById("bd");
+      var x=0;//虚拟点
+      var iSpeed=0
+      var lastX=0;
+      var timer=null;
+      document.onmousedown=function(evt){
+          var oEvent=evt||event;
+          var disX=oEvent.clientX-x;
+
+           document.onmousemove=function(evt){
+                var oEvent=evt||event;
+                x=oEvent.clientX-disX;
+                iSpeed=x-lastX;
+                lastX=x;
+                move();
+           };
+           document.onmouseup=function(){
+                document.onmousemove=null;
+                document.onmouseup=null;
+                clearInterval(timer);
+                timer=setInterval(function(){
+                 
+                 x+=iSpeed;
+                 if(iSpeed>0){
+                    iSpeed--;
+                 }else{
+                    iSpeed++;
+                 }
+                 if(iSpeed==0){
+                    clearInterval(timer);
+                 }
+                 move();
+
+                },30);
+           };
+      };
+ 
+       function move(){
+         if(x>0){
+                  m=parseInt(x/10);
+                  n=76-m%77;
+                }else{
+                  m=parseInt(-x/10);
+                  n=m%77;
+                }               
+                img.src="images/miaov (" + n + ").jpg";
+       }
+   };
+</script>
+</head>
+<body id="bd">
+<img id="img" src="images/miaov (1).jpg"/>
+</body>
+</html>
